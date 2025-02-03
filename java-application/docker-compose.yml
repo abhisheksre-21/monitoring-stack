@@ -1,0 +1,42 @@
+version: '3'
+services:
+  tomcat-app:
+    image: java-tomcat-jmx
+    container_name: tomcat-app
+    restart: always  
+    user: root  
+    environment:
+      - JAVA_OPTS=-Dcom.sun.management.jmxremote
+                  -Dcom.sun.management.jmxremote.port=9010
+                  -Dcom.sun.management.jmxremote.authenticate=false
+                  -Dcom.sun.management.jmxremote.ssl=false
+                  -Djava.rmi.server.hostname=0.0.0.0
+    ports:
+      - "8090:8090" # Tomcat HTTP port
+      - "9010:9010" # JMX port
+    volumes:
+      - ./webapps:/opt/bitnami/tomcat/webapps
+      - ./logs:/opt/bitnami/tomcat/logs
+      - ./conf:/opt/bitnami/tomcat/conf
+      - ./bin:/opt/bitnami/tomcat/bin
+    networks:
+      - monitoring_network
+  jmx-exporter:
+    image: sscaling/jmx-prometheus-exporter
+    container_name: jmx-exporter
+    restart: always  
+    ports:
+      - "9072:9072" # HTTP port for Prometheus metrics
+    environment:
+      SERVICE_PORT: 9072
+    volumes:
+      - ./config.yaml:/config/config.yaml:ro # Mount the configuration file
+    depends_on:
+      - tomcat-app
+    networks:
+      - monitoring_network
+
+networks:
+  monitoring_network:
+    external: true
+

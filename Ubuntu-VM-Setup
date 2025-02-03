@@ -1,0 +1,12 @@
+Steps to get Ubuntu VM installed on local step laptop:
+1. Raise ITIS request under Approved Freeware Software with proper business justification.
+
+
+Business justification example:
+I am working on setting up POC for monitoring & automation. Need help to install WSL2 on my device
+
+My Ticket ID for reference: RITM0024878
+
+Note: Once ITIS team will install WSL2 on your system. By default it will install ubuntu VM on your local system.
+It will ask for ubuntu user and password during installtion. Please provide user name and password as per your choice.
+

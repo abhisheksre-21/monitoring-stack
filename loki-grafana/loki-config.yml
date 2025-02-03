@@ -1,0 +1,41 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9095
+
+common_config:
+  cluster: "loki-cluster"
+  replication_factor: 1
+
+storage_config:
+  boltdb_shipper:
+    active_index_directory: /tmp/loki/index
+    cache_location: /tmp/loki/cache
+    cache_ttl: 24h
+    max_cache_size: 50MB
+  filesystem:
+    directory: /tmp/loki/chunks
+
+chunk_store_config:
+  max_look_back_period: 0s
+
+compactor:
+  compaction_retention_enabled: true
+  retention_delete_delay: 1h
+
+limits_config:
+  max_query_length: 7d
+  max_streams_per_user: 10000
+  max_entries_limit_per_query: 5000
+
+schema_config:
+  configs:
+    - from: 2020-10-15
+      store: boltdb_shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: loki_index_
+        period: 24h
+

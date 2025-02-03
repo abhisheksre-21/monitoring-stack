@@ -1,0 +1,100 @@
+version: '3'
+services:
+  prometheus:
+    image: prom/prometheus
+    restart: always
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - monitoring_network  # Attach to shared network
+
+  grafana:
+    image: grafana/grafana
+    restart: always
+    container_name: grafana
+    ports:
+      - 3000:3000
+    volumes: 
+      - ./grafana-storage:/var/lib/grafana    
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+    networks:
+      - monitoring_network  # Attach to shared network
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor
+    restart: always
+    container_name: cadvisor
+    ports:
+      - 8089:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - monitoring_network  # Attach to shared network
+
+  node_exporter:
+    image: prom/node-exporter:latest
+    restart: always
+    container_name: node_exporter
+    ports:
+      - 9256:9256
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - monitoring_network  # Attach to shared network
+
+  process_exporter:
+    image: ncabatoff/process-exporter:latest
+    restart: always
+    container_name: process_exporter
+    privileged: true
+    volumes:
+      - ./processExporter/conf/process-exporter.yml:/conf/process-exporter.yml
+      - /proc:/host/proc:ro
+    command:
+      - '--config.path=/conf/process-exporter.yml'
+      - '--procfs=/host/proc'
+    networks:
+      - monitoring_network  # Attach to shared network
+  blackbox:
+    image: prom/blackbox-exporter:v0.24.0
+    container_name: blackbox_exporter
+    privileged: true
+    restart: always
+    volumes:
+      - ./blackbox.yml:/etc/blackbox_exporter/config.yml
+    command:
+      - "--config.file=/etc/blackbox_exporter/config.yml"
+    ports:
+      - '9115:9115'
+    networks:
+      - monitoring_network  # Attach to shared network
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - /var/www/html:/usr/share/nginx/html
+    restart: always
+    networks:
+      - monitoring_network  # Attach to shared network        
+
+networks:
+  monitoring_network:
+    external: true  # Use the external network defined earlier
+
