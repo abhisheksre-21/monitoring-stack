@@ -1,6 +1,8 @@
 Note: Make sure you have the root access you start working with prerequisite setup and running docker-compose files.
 
 Prerequisite setup and command to run docker-compose file: 
+# clone the git repo to get all the monitoring deployment docker-compose files.
+git clone https://github.com/abhisheksre-21/monitoring-stack.git
 
 1. Docker
 Docker must be installed on the remote host to run containers. 
