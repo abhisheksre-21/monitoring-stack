@@ -2,20 +2,11 @@
   hosts: all
   become: yes
   vars:
-    alert_triggered: true  # You can toggle this based on external input
+    alert_triggered: true
   tasks:
     - name: Check if alert is triggered
       debug:
         msg: "Alert triggered, proceeding with reboot"
-      when: alert_triggered
-
-    - name: Notify admin before reboot
-      mail:
-        host: "localhost"
-        port: 25
-        to: "admin@example.com"
-        subject: "Reboot Alert Triggered"
-        body: "Reboot initiated on {{ inventory_hostname }} due to alert automation."
       when: alert_triggered
 
     - name: Reboot the host
