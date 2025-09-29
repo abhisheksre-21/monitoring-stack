@@ -1,0 +1,6 @@
+- name: Clean temp files
+  hosts: all
+  become: yes
+  tasks:
+    - name: Delete temp files older than 3 days
+      shell: find /tmp -type f -mtime +3 -delete
