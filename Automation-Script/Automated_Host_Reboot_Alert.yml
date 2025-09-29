@@ -1,0 +1,8 @@
+- name: Reboot host on alert
+  hosts: all
+  become: yes
+  tasks:
+    - name: Reboot the host
+      reboot:
+        msg: "Triggered by alert automation"
+        post_reboot_delay: 60
