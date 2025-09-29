@@ -1,0 +1,11 @@
+- name: Check DNS resolution
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Resolve domain
+      shell: nslookup google.com
+      register: dns_output
+
+    - name: Show DNS result
+      debug:
+        msg: "{{ dns_output.stdout }}"
