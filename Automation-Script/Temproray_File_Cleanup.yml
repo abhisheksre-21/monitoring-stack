@@ -12,6 +12,6 @@
       register: cleanup_result
       changed_when: cleanup_result.rc == 0
 
-    - name: Show cleanup status
+    - name: Confirm cleanup
       debug:
-        msg: "Temp files older than 3 days have been deleted."
+        msg: "Temporary files older than 3 days have been removed."
