@@ -1,11 +1,18 @@
+---
 - name: Diagnose network latency
   hosts: all
+  become: yes
   gather_facts: no
+
+  vars:
+    target_host: "google.com"
+
   tasks:
     - name: Trace route to external host
-      shell: traceroute google.com
+      shell: "traceroute {{ target_host }}"
       register: trace_output
+      ignore_errors: yes
 
-    - name: Show traceroute
+    - name: Show traceroute result
       debug:
         msg: "{{ trace_output.stdout }}"
