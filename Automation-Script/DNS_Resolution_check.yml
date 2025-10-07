@@ -5,7 +5,7 @@
   gather_facts: no
 
   vars:
-    domain_to_check: "example.com"
+    domain_to_check: "github.com"
 
   tasks:
     - name: Resolve domain
