@@ -1,6 +1,17 @@
+---
 - name: Clean temp files
   hosts: all
   become: yes
+  gather_facts: yes
+
   tasks:
     - name: Delete temp files older than 3 days
       shell: find /tmp -type f -mtime +3 -delete
+      args:
+        warn: false
+      register: cleanup_result
+      changed_when: cleanup_result.rc == 0
+
+    - name: Show cleanup status
+      debug:
+        msg: "Temp files older than 3 days have been deleted."
