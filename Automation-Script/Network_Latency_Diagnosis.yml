@@ -2,12 +2,18 @@
 - name: Diagnose network latency
   hosts: all
   become: yes
+  become_method: sudo
   gather_facts: no
 
   vars:
     target_host: "google.com"
 
   tasks:
+    - name: Ensure traceroute is installed
+      package:
+        name: traceroute
+        state: present
+
     - name: Trace route to external host
       shell: "traceroute {{ target_host }}"
       register: trace_output
