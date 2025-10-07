@@ -1,11 +1,18 @@
+---
 - name: Check DNS resolution
-  hosts: all
+  hosts: localhost
+  connection: local
   gather_facts: no
+
+  vars:
+    domain_to_check: "example.com"
+
   tasks:
     - name: Resolve domain
-      shell: nslookup google.com
-      register: dns_output
+      shell: "nslookup {{ domain_to_check }}"
+      register: dns_result
+      ignore_errors: yes
 
-    - name: Show DNS result
+    - name: Show DNS resolution result
       debug:
-        msg: "{{ dns_output.stdout }}"
+        msg: "{{ dns_result.stdout }}"
